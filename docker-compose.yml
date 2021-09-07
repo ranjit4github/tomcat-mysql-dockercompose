@@ -1,0 +1,39 @@
+---
+version: "2"
+services:
+    tomcat:
+        build: .
+        ports:
+            - "8282:8080"
+        volumes:
+            - ./tomcat/target:/usr/local/tomcat/webapps
+        links:
+            - db
+        networks:
+            - default
+    db:
+        image: mysql:5.7.28
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: devopsclass
+            MYSQL_USER: ranjit
+            MYSQL_PASSWORD: Sunday@2019
+            MYSQL_ROOT_PASSWORD: Sunday@2019
+        volumes:
+            - ./dump:/docker-entrypoint-initdb.d
+            - persistent:/var/lib/mysql
+        networks:
+            - default
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - db:db
+        ports:
+            - 8383:80
+        environment:
+            MYSQL_USER: ranjit
+            MYSQL_PASSWORD: Sunday@2019
+            MYSQL_ROOT_PASSWORD: Sunday@2019
+volumes:
+    persistent:
